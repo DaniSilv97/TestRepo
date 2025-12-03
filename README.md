@@ -1,19 +1,20 @@
 # React Router Login Demo
 
-A complete, fully functional React.js application demonstrating React Router DOM v6 navigation with a basic login system using custom "encryption" for educational purposes.
+A complete, fully functional React.js application demonstrating React Router DOM v6 navigation with a basic login system. This educational project shows the difference between **reversible encryption** (for data transmission) and **irreversible hashing** (for password storage).
 
 ## ⚠️ CRITICAL SECURITY WARNING
 
 **THIS APPLICATION IS FOR DEMONSTRATION AND EDUCATIONAL PURPOSES ONLY!**
 
-This project uses intentionally simplified and **INSECURE** "encryption" mechanisms to demonstrate concepts. The implementation includes:
+This project uses intentionally simplified and **INSECURE** cryptographic mechanisms to demonstrate concepts. The implementation includes:
 
 - Hardcoded encryption keys
-- Simple XOR cipher (trivially breakable)
+- Simple XOR cipher for transmission (trivially breakable)
+- Basic SHA-256 hashing without salt (vulnerable to rainbow tables)
 - Client-side only authentication (no real backend)
 - LocalStorage for session management (not secure)
 - No HTTPS enforcement
-- No real password hashing
+- No rate limiting or account lockout
 
 **NEVER USE THIS CODE IN PRODUCTION OR FOR REAL APPLICATIONS!**
 
@@ -33,8 +34,11 @@ For production applications, you must:
 - ✅ Protected routes with authentication
 - ✅ Custom Authentication Context
 - ✅ Login/Register functionality
-- ✅ Custom "encryption" demonstration (XOR cipher)
+- ✅ **Dual cryptography demonstration:**
+  - Reversible encryption (XOR) for transmission
+  - Irreversible hashing (SHA-256) for storage
 - ✅ Simulated End-to-End Encryption (E2EE) concept
+- ✅ Visual demos showing encryption vs hashing
 - ✅ Responsive design
 - ✅ Persistent sessions (localStorage)
 - ✅ Clean, modern UI with gradient styling
@@ -112,31 +116,67 @@ You can also register new users through the application (they will only persist 
 
 ### Authentication Flow
 
-1. **Login/Register**: User enters credentials on the Login page
-2. **"Encryption"**: Password is "encrypted" using XOR cipher client-side
-3. **Validation**: Encrypted input is compared with stored encrypted password
-4. **Session**: On success, user data is stored in localStorage
-5. **Protected Routes**: Dashboard requires authentication to access
-6. **Logout**: Clears session data from localStorage
+This application demonstrates TWO different cryptographic concepts:
 
-### Custom "Encryption" Mechanism
+#### 1. **REVERSIBLE Encryption** (For Transmission - simulating HTTPS/TLS)
+Used when sending data between client and "server":
+- Password is encrypted with XOR cipher before transmission
+- Server decrypts it to get the original password
+- Simulates how HTTPS/TLS protects data in transit
 
-The application uses a simple XOR cipher for demonstration:
+#### 2. **IRREVERSIBLE Hashing** (For Storage - correct password storage)
+Used when storing passwords in the database:
+- Passwords are hashed with SHA-256 (one-way function)
+- **Cannot be decrypted** - it's mathematically impossible to reverse
+- Validation works by comparing hashes, not passwords
 
-```javascript
-// Encryption: Plain text → XOR with key → Base64 encoding
-const encrypted = encryptPassword('myPassword');
+### Complete Authentication Flow
 
-// Decryption: Base64 decode → XOR with key → Plain text
-const decrypted = decryptPassword(encrypted);
+```
+1. User enters password: "password123"
+   ↓
+2. CLIENT: Encrypt for transmission (XOR)
+   → "SGVsbG8gV29ybGQh" (Base64)
+   ↓
+3. [Simulated Network Transmission]
+   ↓
+4. SERVER: Decrypt received data (XOR)
+   → "password123" (temporarily in memory)
+   ↓
+5. SERVER: Hash password (SHA-256)
+   → "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f"
+   ↓
+6. SERVER: Compare with stored hash
+   → Match? ✓ Login success!
+   ↓
+7. Store session in localStorage
 ```
 
-**Why this is insecure:**
-- Fixed, hardcoded key that never changes
-- XOR cipher is symmetric and easily reversible
-- Key is visible in client-side JavaScript
-- No salt, no key derivation function
-- Vulnerable to frequency analysis and known-plaintext attacks
+### Why This Dual System?
+
+**Reversible Encryption (XOR) for Transmission:**
+```javascript
+// Can encrypt AND decrypt
+const encrypted = encryptForTransmission('myPassword');
+const decrypted = decryptFromTransmission(encrypted); // Gets original back!
+```
+- **Purpose**: Protect data during transmission
+- **Real-world equivalent**: HTTPS/TLS
+- **Insecure here because**: Hardcoded key, simple XOR cipher
+
+**Irreversible Hashing (SHA-256) for Storage:**
+```javascript
+// Can ONLY hash, CANNOT reverse
+const hash = await hashPassword('myPassword');
+// → "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+
+// Try to reverse it? IMPOSSIBLE!
+// No function can get "myPassword" back from the hash
+```
+- **Purpose**: Store passwords securely in database
+- **Real-world equivalent**: bcrypt, Argon2, scrypt
+- **Why it's better**: Even if database is stolen, passwords are safe
+- **Still insecure here because**: No salt, plain SHA-256 (use bcrypt in production!)
 
 ### React Router v6 Features
 

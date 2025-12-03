@@ -7,6 +7,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { login, register } = useAuth();
@@ -14,23 +15,34 @@ export default function Login() {
   // Get the page they were trying to visit, or default to dashboard
   const from = location.state?.from?.pathname || '/dashboard';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
     if (!username || !password) {
       setError('Please enter both username and password');
+      setIsLoading(false);
       return;
     }
 
-    // Use login or register based on mode
-    const result = isRegistering ? register(username, password) : login(username, password);
+    try {
+      // Use login or register based on mode (both are now async)
+      const result = isRegistering
+        ? await register(username, password)
+        : await login(username, password);
 
-    if (result.success) {
-      // Redirect to the page they were trying to visit or dashboard
-      navigate(from, { replace: true });
-    } else {
-      setError(result.error);
+      if (result.success) {
+        // Redirect to the page they were trying to visit or dashboard
+        navigate(from, { replace: true });
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      console.error('Authentication error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,8 +89,8 @@ export default function Login() {
 
           {error && <div className="error-message">{error}</div>}
 
-          <button type="submit" className="btn-primary">
-            {isRegistering ? 'Register' : 'Login'}
+          <button type="submit" className="btn-primary" disabled={isLoading}>
+            {isLoading ? 'Processing...' : (isRegistering ? 'Register' : 'Login')}
           </button>
         </form>
 

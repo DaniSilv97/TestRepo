@@ -1,20 +1,32 @@
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { decryptPassword, encryptPassword } from '../utils/simpleEncryption';
+import {
+  encryptForTransmission,
+  decryptFromTransmission,
+  hashPassword
+} from '../utils/simpleEncryption';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [passwordHash, setPasswordHash] = useState('');
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
-  // Demo: Show encryption/decryption in action
+  // Demo 1: Reversible encryption (for transmission)
   const demoText = 'Hello, World!';
-  const encrypted = encryptPassword(demoText);
-  const decrypted = decryptPassword(encrypted);
+  const encryptedForTransmission = encryptForTransmission(demoText);
+  const decryptedFromTransmission = decryptFromTransmission(encryptedForTransmission);
+
+  // Demo 2: Irreversible hashing (for storage)
+  const demoPassword = 'myPassword123';
+  useEffect(() => {
+    hashPassword(demoPassword).then(hash => setPasswordHash(hash));
+  }, []);
 
   return (
     <div className="page-container">
@@ -50,31 +62,73 @@ export default function Dashboard() {
         </div>
 
         <div className="demo-section">
-          <h2>Encryption Demo</h2>
-          <p>See the custom "encryption" mechanism in action:</p>
+          <h2>🔐 Encryption vs Hashing Demo</h2>
+          <p>This app demonstrates TWO different cryptographic concepts:</p>
 
+          <h3 style={{ marginTop: '2rem', color: '#28a745' }}>
+            1. REVERSIBLE Encryption (For Transmission)
+          </h3>
           <div className="demo-box">
             <div className="demo-row">
-              <strong>Original Text:</strong>
+              <strong>Original Message:</strong>
               <code>{demoText}</code>
             </div>
             <div className="demo-row">
-              <strong>"Encrypted" (Base64):</strong>
-              <code className="encrypted">{encrypted}</code>
+              <strong>Encrypted for Transmission:</strong>
+              <code className="encrypted">{encryptedForTransmission}</code>
             </div>
             <div className="demo-row">
-              <strong>"Decrypted" Text:</strong>
-              <code>{decrypted}</code>
+              <strong>Decrypted on Server:</strong>
+              <code style={{ color: '#28a745' }}>{decryptedFromTransmission}</code>
             </div>
+          </div>
+          <div className="info-box" style={{ background: '#d4edda', borderColor: '#28a745' }}>
+            <p>
+              <strong>✓ Reversible (XOR Cipher):</strong> Used to encrypt data during transmission
+              between client and server (simulating HTTPS/TLS). The server can decrypt it to read
+              the original message. This is necessary for communication!
+            </p>
+          </div>
+
+          <h3 style={{ marginTop: '2rem', color: '#dc3545' }}>
+            2. IRREVERSIBLE Hashing (For Storage)
+          </h3>
+          <div className="demo-box">
+            <div className="demo-row">
+              <strong>Original Password:</strong>
+              <code>{demoPassword}</code>
+            </div>
+            <div className="demo-row">
+              <strong>Stored Hash (SHA-256):</strong>
+              <code className="encrypted" style={{ fontSize: '0.75rem' }}>
+                {passwordHash || 'Computing...'}
+              </code>
+            </div>
+            <div className="demo-row">
+              <strong>Can we decrypt it back?</strong>
+              <code style={{ color: '#dc3545', fontWeight: 'bold' }}>
+                ❌ NO! It's IMPOSSIBLE to reverse!
+              </code>
+            </div>
+          </div>
+          <div className="warning-box">
+            <p>
+              <strong>✓ Irreversible (SHA-256 Hash):</strong> Used to store passwords in the database.
+              Even if someone steals the database, they CANNOT get the original passwords. Login
+              validation works by comparing hashes, not passwords!
+            </p>
           </div>
 
           <div className="info-box">
             <p>
-              <strong>How it works:</strong> The application uses a simple XOR cipher
-              with a hardcoded key. Each character is XOR'd with the key, then encoded
-              in Base64 for storage. This is intentionally insecure and only demonstrates
-              the concept of client-side encryption.
+              <strong>The Complete Flow:</strong>
             </p>
+            <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem' }}>
+              <li>User enters password → Encrypted with XOR (transmission)</li>
+              <li>Server receives → Decrypts to get password</li>
+              <li>Server hashes password with SHA-256 → Stores hash</li>
+              <li>Login: Hash input password → Compare hashes → Allow/Deny</li>
+            </ol>
           </div>
         </div>
 

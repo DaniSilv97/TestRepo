@@ -11,8 +11,6 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, register } = useAuth();
-
-  // Get the page they were trying to visit, or default to dashboard
   const from = location.state?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e) => {
@@ -27,13 +25,11 @@ export default function Login() {
     }
 
     try {
-      // Use login or register based on mode (both are now async)
       const result = isRegistering
         ? await register(username, password)
         : await login(username, password);
 
       if (result.success) {
-        // Redirect to the page they were trying to visit or dashboard
         navigate(from, { replace: true });
       } else {
         setError(result.error);
@@ -50,17 +46,6 @@ export default function Login() {
     <div className="login-container">
       <div className="login-box">
         <h1>{isRegistering ? 'Register' : 'Login'}</h1>
-
-        <div className="warning-box">
-          <strong>⚠️ DEMONSTRATION ONLY</strong>
-          <p>This uses intentionally insecure "encryption" for educational purposes.</p>
-          <p><strong>Demo credentials:</strong></p>
-          <ul>
-            <li>Username: demo / Password: password123</li>
-            <li>Username: admin / Password: admin456</li>
-            <li>Username: user / Password: test789</li>
-          </ul>
-        </div>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">

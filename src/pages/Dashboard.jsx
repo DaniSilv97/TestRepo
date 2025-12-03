@@ -17,12 +17,10 @@ export default function Dashboard() {
     navigate('/');
   };
 
-  // Demo 1: Reversible encryption (for transmission)
   const demoText = 'Hello, World!';
   const encryptedForTransmission = encryptForTransmission(demoText);
   const decryptedFromTransmission = decryptFromTransmission(encryptedForTransmission);
 
-  // Demo 2: Irreversible hashing (for storage)
   const demoPassword = 'myPassword123';
   useEffect(() => {
     hashPassword(demoPassword).then(hash => setPasswordHash(hash));
@@ -40,7 +38,6 @@ export default function Dashboard() {
 
         <div className="info-section">
           <h2>Welcome, {user.username}!</h2>
-          <p>This is a protected route. Only authenticated users can see this page.</p>
           <p className="text-muted">
             Login time: {new Date(user.loginTime).toLocaleString()}
           </p>
@@ -62,73 +59,44 @@ export default function Dashboard() {
         </div>
 
         <div className="demo-section">
-          <h2>🔐 Encryption vs Hashing Demo</h2>
-          <p>This app demonstrates TWO different cryptographic concepts:</p>
+          <h2>Encryption vs Hashing</h2>
 
           <h3 style={{ marginTop: '2rem', color: '#28a745' }}>
-            1. REVERSIBLE Encryption (For Transmission)
+            Reversible Encryption (Transmission)
           </h3>
           <div className="demo-box">
             <div className="demo-row">
-              <strong>Original Message:</strong>
+              <strong>Original:</strong>
               <code>{demoText}</code>
             </div>
             <div className="demo-row">
-              <strong>Encrypted for Transmission:</strong>
+              <strong>Encrypted:</strong>
               <code className="encrypted">{encryptedForTransmission}</code>
             </div>
             <div className="demo-row">
-              <strong>Decrypted on Server:</strong>
+              <strong>Decrypted:</strong>
               <code style={{ color: '#28a745' }}>{decryptedFromTransmission}</code>
             </div>
           </div>
-          <div className="info-box" style={{ background: '#d4edda', borderColor: '#28a745' }}>
-            <p>
-              <strong>✓ Reversible (XOR Cipher):</strong> Used to encrypt data during transmission
-              between client and server (simulating HTTPS/TLS). The server can decrypt it to read
-              the original message. This is necessary for communication!
-            </p>
-          </div>
 
           <h3 style={{ marginTop: '2rem', color: '#dc3545' }}>
-            2. IRREVERSIBLE Hashing (For Storage)
+            Irreversible Hashing (Storage)
           </h3>
           <div className="demo-box">
             <div className="demo-row">
-              <strong>Original Password:</strong>
+              <strong>Original:</strong>
               <code>{demoPassword}</code>
             </div>
             <div className="demo-row">
-              <strong>Stored Hash (SHA-256):</strong>
+              <strong>Hash:</strong>
               <code className="encrypted" style={{ fontSize: '0.75rem' }}>
                 {passwordHash || 'Computing...'}
               </code>
             </div>
             <div className="demo-row">
-              <strong>Can we decrypt it back?</strong>
-              <code style={{ color: '#dc3545', fontWeight: 'bold' }}>
-                ❌ NO! It's IMPOSSIBLE to reverse!
-              </code>
+              <strong>Reversible?</strong>
+              <code style={{ color: '#dc3545', fontWeight: 'bold' }}>No</code>
             </div>
-          </div>
-          <div className="warning-box">
-            <p>
-              <strong>✓ Irreversible (SHA-256 Hash):</strong> Used to store passwords in the database.
-              Even if someone steals the database, they CANNOT get the original passwords. Login
-              validation works by comparing hashes, not passwords!
-            </p>
-          </div>
-
-          <div className="info-box">
-            <p>
-              <strong>The Complete Flow:</strong>
-            </p>
-            <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem' }}>
-              <li>User enters password → Encrypted with XOR (transmission)</li>
-              <li>Server receives → Decrypts to get password</li>
-              <li>Server hashes password with SHA-256 → Stores hash</li>
-              <li>Login: Hash input password → Compare hashes → Allow/Deny</li>
-            </ol>
           </div>
         </div>
 

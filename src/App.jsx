@@ -38,15 +38,6 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
-
-          <footer className="footer">
-            <p>
-              ⚠️ Demonstration App - NOT for Production Use
-            </p>
-            <p className="footer-small">
-              This app uses intentionally insecure "encryption" for educational purposes only.
-            </p>
-          </footer>
         </div>
       </AuthProvider>
     </BrowserRouter>

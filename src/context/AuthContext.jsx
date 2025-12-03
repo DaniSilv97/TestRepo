@@ -6,14 +6,35 @@ const AuthContext = createContext(null);
 const DEMO_USERS = {};
 let usersInitialized = false;
 
+function saveUsersToStorage() {
+  localStorage.setItem('usersDatabase', JSON.stringify(DEMO_USERS));
+}
+
+function loadUsersFromStorage() {
+  const stored = localStorage.getItem('usersDatabase');
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    Object.assign(DEMO_USERS, parsed);
+    return true;
+  }
+  return false;
+}
+
 async function initializeDemoUsers() {
   if (usersInitialized) return;
 
-  DEMO_USERS['demo'] = await hashPassword('password123');
-  DEMO_USERS['admin'] = await hashPassword('admin456');
-  DEMO_USERS['user'] = await hashPassword('test789');
+  if (!loadUsersFromStorage()) {
+    DEMO_USERS['demo'] = await hashPassword('password123');
+    DEMO_USERS['admin'] = await hashPassword('admin456');
+    DEMO_USERS['user'] = await hashPassword('test789');
+    saveUsersToStorage();
+  }
 
   usersInitialized = true;
+}
+
+export function getAllUsers() {
+  return { ...DEMO_USERS };
 }
 
 export function AuthProvider({ children }) {
@@ -72,6 +93,7 @@ export function AuthProvider({ children }) {
 
     const passwordHash = await hashPassword(receivedPassword);
     DEMO_USERS[username] = passwordHash;
+    saveUsersToStorage();
 
     const userData = {
       username,

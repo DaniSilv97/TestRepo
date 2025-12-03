@@ -529,6 +529,77 @@ body {
   font-size: 0.9rem;
 }
 
+/* Users Table */
+.users-table {
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+.users-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.users-table th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.users-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+
+.users-table tr:hover {
+  background: #f8f9fa;
+}
+
+.username-cell {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 120px;
+}
+
+.hash-cell {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #666;
+  word-break: break-all;
+}
+
+/* JSON View */
+.json-section {
+  margin: 2rem 0;
+}
+
+.json-section h2 {
+  color: #667eea;
+  margin-bottom: 1rem;
+}
+
+.json-view {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {

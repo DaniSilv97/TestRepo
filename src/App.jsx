@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Users from './pages/Users';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
                 <Link to="/" className="nav-link">Home</Link>
                 <Link to="/login" className="nav-link">Login</Link>
                 <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                <Link to="/users" className="nav-link">Users</Link>
               </div>
             </div>
           </nav>
@@ -35,6 +37,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="/users" element={<Users />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

@@ -42,6 +42,25 @@ export default function Login() {
     }
   };
 
+  const handleQuickLogin = async (user, pass) => {
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const result = await login(user, pass);
+      if (result.success) {
+        navigate(from, { replace: true });
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      console.error('Authentication error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-box">
@@ -78,6 +97,35 @@ export default function Login() {
             {isLoading ? 'Processing...' : (isRegistering ? 'Register' : 'Login')}
           </button>
         </form>
+
+        {!isRegistering && (
+          <div className="quick-login">
+            <p className="quick-login-label">Quick Login:</p>
+            <div className="quick-login-buttons">
+              <button
+                onClick={() => handleQuickLogin('demo', 'password123')}
+                className="btn-quick"
+                disabled={isLoading}
+              >
+                Demo
+              </button>
+              <button
+                onClick={() => handleQuickLogin('admin', 'admin456')}
+                className="btn-quick"
+                disabled={isLoading}
+              >
+                Admin
+              </button>
+              <button
+                onClick={() => handleQuickLogin('user', 'test789')}
+                className="btn-quick"
+                disabled={isLoading}
+              >
+                User
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="toggle-mode">
           <button

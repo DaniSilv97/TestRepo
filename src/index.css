@@ -226,6 +226,52 @@ body {
   margin-top: 1.5rem;
 }
 
+/* Quick Login */
+.quick-login {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.quick-login-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.quick-login-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-quick {
+  flex: 1;
+  min-width: 80px;
+  padding: 0.5rem 1rem;
+  border: 2px solid #667eea;
+  background: white;
+  color: #667eea;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-quick:hover:not(:disabled) {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-quick:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Warning/Info Boxes */
 .warning-box,
 .info-box {

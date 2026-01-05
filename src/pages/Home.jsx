@@ -38,9 +38,6 @@ export default function Home() {
               <Link to="/login" className="btn-primary">
                 Login / Register
               </Link>
-              <Link to="/dashboard" className="btn-secondary">
-                Try Protected Route
-              </Link>
             </div>
           </div>
         )}

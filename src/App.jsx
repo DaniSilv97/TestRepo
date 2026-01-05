@@ -37,7 +37,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/users" element={<Users />} />
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute>
+                    <Users />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
